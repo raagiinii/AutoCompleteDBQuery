@@ -19,14 +19,15 @@ def extract(query):
     x = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     userNames =[]
     keyWords =[]
-    print(x)
+
+    #Finds the first 5 words starting with each alphabet and then uses the last word retrived to fetch more words.
     for i in x:
         words = query(i)
-        keyWords.append(i)
-        if len(words) <= 5 and len(words)!=0:
+        keyWords.append(i) # To restrict calls to query. Once called, the words are already retrieved.
+        if len(words) <= 5 and len(words)!=0: 
                 for w in words:
                     userNames.append(w)
-        if len(words) == 5: # If  there are 5 or more words with alphabet i 
+        if len(words) == 5: # If  there are 5 words, check if there are more.
             # Get the 5th word
             temp = words[-1]
             tm = [temp]
@@ -35,18 +36,14 @@ def extract(query):
             for e in r:
                 if e not in userNames:
                     userNames.append(e)
-    print(sorted(userNames))
     return sorted(userNames)
-         # There are words < 5 starting with alphabet i
-
+    
 def call(x,temp,tm,query,keyList):
     tot = len(temp)
     for j in range(tot-1):
         queryWord = temp[:tot-j]
-        
         lastC = queryWord[-1]
         lastCNum = findInd(lastC)
-        print("Querying for ",queryWord)
         ct = 0
         for i in range(lastCNum-1,len(x)):
             if ct == 0:
@@ -55,18 +52,13 @@ def call(x,temp,tm,query,keyList):
                     continue
                 
                 keyList.append(qWord)
-                print("---------------------Querying for ",qWord)
                 p = query(qWord)
                 ct += 1
             else:
-
                 qWord = queryWord[:-1]+ x[i]
                 if qWord in keyList:
                     continue
-                
-            
                 keyList.append(qWord)
-                print("---------------------Querying for ",qWord)
                 p = query(qWord)
             if len(p) <= 5 and len(p)!=0:
                 for w in p:
@@ -74,35 +66,27 @@ def call(x,temp,tm,query,keyList):
                         tm.append(w)
             if len(p) == 5: # If  there are 5 or more words with alphabet i 
                 # Get the 5th word
-                print("Here")
                 temp = p[-1]
+                #tm = [temp]
+                #tm.append(temp)
                 call(x,temp,tm,query,keyList)
-                # for w in call(x,temp,tm,query,keyList):
-                #     print(w)
-                #     if w not in tm:
-                #         print("Do I ever come here ")
-                #         print("Appending",w)
-                #         tm.append(w) 
-
-
-
-            #&*************************************************
-               
     return tm
-
-
 
 def findInd(c):
     x = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     for i in range(len(x)):
         if c==x[i]:
             return i
+
 def main():
     """Runs your solution -- no need to update (except to maybe try out different databases)."""
     # Sample implementation of the autocomplete API
     #database = ["abracadara", "al", "alice", "alicia", "alicias","allen","allenate", "alter", "altercation","amuse","amusea","amusec","amused","amusee","amusement","amusingly","amusinglyz", "bob", "element", "ello", "eve","evening", "event", "eventually", "mallory"]
     #database = ["agdfhg","amuse","amusea","amusec","amused","amusee","amusement","amusingly","amusinglyz", "arfkdfg","post","posu","posv","posw","posx","posy","posz"]
+    # f = open('z_words.txt', 'r')
+    # database  = f.read().split('\n')
+    # f.close()
+    database = ["abracadara", "al", "alice", "alicia", "allen", "alter", "altercation", "bob", "element", "ello", "eve", "evening", "event", "eventually", "mallory"]
     query = lambda prefix: [d for d in database if d.startswith(prefix)][:5]
     assert extract(query) == database
-
 main()
