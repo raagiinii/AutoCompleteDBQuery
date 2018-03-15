@@ -67,8 +67,6 @@ def call(x,temp,tm,query,keyList):
             if len(p) == 5: # If  there are 5 or more words with alphabet i 
                 # Get the 5th word
                 temp = p[-1]
-                #tm = [temp]
-                #tm.append(temp)
                 call(x,temp,tm,query,keyList)
     return tm
 
